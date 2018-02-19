@@ -66,13 +66,24 @@ class MyMainWindow(QMainWindow):
         self.H = cv2.findHomography(self.pts_1, self.pts_2, cv2.RANSAC)
 
         print("Homography: ")
-        print(self.H)
+        print(self.H[0])
         # Save
         np.savetxt('pts_1.txt', self.pts_1) 
         np.savetxt('pts_2.txt', self.pts_2) 
-        np.savetxt('H.txt', np.array(self.H))
+        np.savetxt('H.txt', np.array(self.H[0]))
 
+    def load_homography(self):
 
+        self.pts_1 = np.loadtxt('pts_1.txt') 
+        self.pts_2 = np.loadtxt('pts_2.txt') 
+        self.H     = np.loadtxt('H.txt')
+
+        self.cv_imwarp1 = cv2.warpPerspective(self.cv_im1, self.H, self.cv_im2.shape[:2])
+        cv2.imwrite("data/imwarp_1.png", self.cv_imwarp1)
+
+        print(self.pts_1)
+        print(self.pts_2)
+        print(self.H)
 
     def __init__(self, parent=None):
         # Private variables
@@ -89,6 +100,10 @@ class MyMainWindow(QMainWindow):
         # Labels for images
         path_img1 = 'data/P003M.bmp'
         path_img2 = 'data/P003M.png'
+        self.cv_im1 = cv2.imread(path_img1, 0)
+        self.cv_im2 = cv2.imread(path_img2, 0)
+        self.cv_imwarp1 = []
+
         self.l1 = QLabel()
         self.pix1 = QPixmap(path_img1)
         self.l1.setPixmap(self.pix1)
@@ -108,15 +123,22 @@ class MyMainWindow(QMainWindow):
         # Disable Label
 
 
+
+
+
         self.but = QPushButton("Find Homography", self.win)
         self.but.clicked.connect(self.find_homography)
 
+
+        self.but2 = QPushButton("Load Homography", self.win)
+        self.but2.clicked.connect(self.load_homography)
         # Add GUI elements
 
         self.hbox.addWidget(self.l1)
         self.hbox.addWidget(self.l2)
 
         self.hbox.addWidget(self.but)
+        self.hbox.addWidget(self.but2)
 
         """
         # Label to display the selected correspondences coords
