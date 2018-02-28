@@ -15,9 +15,13 @@ import sys
 #########################################################
 
 
-# TODO when selecting points mode:
-# only one image per time can be activated to receive mouse events, disable the other to avoid confussions!
+# TODO when selecting points mode: only one image per time can be activated to receive mouse events, disable the other to avoid confussions!
+
 # TODO resize QLabels to fixed size, then transform the pixels selected to the real coordinates of that images...
+
+# TODO allow zoom in /out on the imageviewer maintinng the aspect ratio for the images
+
+# TODO add automatic mode (keypoints + descriptor + ransac?)
 
 class MyMainWindow(QMainWindow):
 
