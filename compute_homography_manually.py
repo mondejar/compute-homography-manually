@@ -6,13 +6,18 @@ from PyQt4.QtGui  import *
 
 import sys
 
+#########################################################
+# Description:
+# Main file that creates the GUI and connect the methods
+#
+# Author: Monderjar-Guerra V.
+# Last modification: 28/02/2018
+#########################################################
+
 
 # TODO when selecting points mode:
 # only one image per time can be activated to receive mouse events, disable the other to avoid confussions!
-
 # TODO resize QLabels to fixed size, then transform the pixels selected to the real coordinates of that images...
-
-
 
 class MyMainWindow(QMainWindow):
 
@@ -43,15 +48,17 @@ class MyMainWindow(QMainWindow):
             self.label_activated = 1
 
 
-            # TODO 
+            # TODO https://wiki.qt.io/Smooth_Zoom_In_QGraphicsView
             # Paint
             
             # Disable 
 
             # Enable
 
+    def select_correspondences(self):
+        print("TO DO")
 
-    def find_homography(self):
+    def compute_homography(self):
         print("Pts 1:")
         print(self.pts_1)
 
@@ -85,7 +92,69 @@ class MyMainWindow(QMainWindow):
         print(self.pts_2)
         print(self.H)
 
+
+
+    def loadImage(self, id):
+        print("To DO" + str(id))
+
+    def add_menu_actions(self):
+        # Define actions
+        exitAction = QAction(QIcon('exit.png'), '&Exit', self)        
+        exitAction.setShortcut('Ctrl+Q')
+        exitAction.setStatusTip('Exit application')
+        exitAction.triggered.connect(qApp.quit)
+
+        loadImg_1_Action = QAction(QIcon('exit.png'), 'Load Image &1', self)        
+        loadImg_1_Action.setShortcut('Ctrl+W')
+        loadImg_1_Action.setStatusTip('Load image 1 (left)')
+        loadImg_1_Action.triggered.connect(lambda: self.loadImage(1))
+
+        loadImg_2_Action = QAction(QIcon('exit.png'), 'Load Image &2', self)        
+        loadImg_2_Action.setShortcut('Ctrl+E')
+        loadImg_2_Action.setStatusTip('Load image 2 (rigth)')
+        loadImg_2_Action.triggered.connect(lambda: self.loadImage(2))
+
+        # Define menus
+        self.fileMenu =  self.menuBar().addMenu('&File')
+
+        self.fileMenu.addAction(loadImg_1_Action)
+        self.fileMenu.addAction(loadImg_2_Action)
+        self.fileMenu.addAction(exitAction)
+
+
+
+        self.fileMenu =  self.menuBar().addMenu('&Homography')
+        # select correspondences
+        # compute homography
+        # load correspondences
+        # load homography
+
+
+    def add_GUI_buttons(self):
+        self.lab_buttons = QLabel()
+        self.vbox = QVBoxLayout()
+
+        # Buttons
+        self.but_sc = QPushButton("Select Correspondences", self.win)
+        self.but_sc.clicked.connect(self.select_correspondences)
+
+        self.but_ch = QPushButton("Compute Homography", self.win)
+        self.but_ch.clicked.connect(self.compute_homography)
+
+
+        self.but_lh = QPushButton("Load Homography", self.win)
+        self.but_lh.clicked.connect(self.load_homography)
+        
+
+        self.vbox.addWidget(self.but_sc)
+        self.vbox.addWidget(self.but_ch)
+        self.vbox.addWidget(self.but_lh)
+
+        self.lab_buttons.setLayout(self.vbox)
+
     def __init__(self, parent=None):
+
+
         # Private variables
         self.label_activated = 1
 
@@ -107,7 +176,7 @@ class MyMainWindow(QMainWindow):
         self.l1 = QLabel()
         self.pix1 = QPixmap(path_img1)
         self.l1.setPixmap(self.pix1)
-        self.l1.resize(self.pix1.size())
+        #self.l1.resize(self.pix1.size())
         self.l1.setAlignment(Qt.AlignTop | Qt.AlignLeft)
 
         self.l1.mousePressEvent = self.getPos_1
@@ -115,7 +184,7 @@ class MyMainWindow(QMainWindow):
         self.l2 = QLabel()
         self.pix2 = QPixmap(path_img2)
         self.l2.setPixmap(self.pix2)
-        self.l2.resize(self.pix1.size())
+        #self.l2.resize(self.pix1.size())
         self.l2.setAlignment(Qt.AlignTop | Qt.AlignLeft)
 
         self.l2.mousePressEvent = self.getPos_2
@@ -123,22 +192,22 @@ class MyMainWindow(QMainWindow):
         # Disable Label
 
 
+        # Create Menu GUI actions
+        self.add_menu_actions()
+
+        # Create GUI Buttons
+        self.add_GUI_buttons()
 
 
-
-        self.but = QPushButton("Find Homography", self.win)
-        self.but.clicked.connect(self.find_homography)
-
-
-        self.but2 = QPushButton("Load Homography", self.win)
-        self.but2.clicked.connect(self.load_homography)
         # Add GUI elements
+        # TODO 
+        # add a box with the correspondences selected 
 
         self.hbox.addWidget(self.l1)
         self.hbox.addWidget(self.l2)
+        self.hbox.addWidget(self.lab_buttons)
 
-        self.hbox.addWidget(self.but)
-        self.hbox.addWidget(self.but2)
+
 
         """
         # Label to display the selected correspondences coords
